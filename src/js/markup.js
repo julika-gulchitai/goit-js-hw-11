@@ -2,6 +2,7 @@ export function createMarkup(item) {
   return item
     .map(
       item => `<div class="photo-card">
+    <a class="gallery-link" href = "${item.largeImageURL}">
   <img src="${item.webformatURL}" alt="${item.tags}" class="gallery-img" loading="lazy" />
   <div class="info">
     <p class="info-item">
@@ -17,6 +18,7 @@ export function createMarkup(item) {
       <b>Downloads: ${item.downloads}</b>
     </p>
   </div>
+  </a>
 </div>`
     )
     .join('');

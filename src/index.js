@@ -2,8 +2,14 @@ import Notiflix from 'notiflix';
 import { form, gallery, loadMore } from './js/refs';
 import { PixabayAPI } from './js/pixabay-api';
 import { createMarkup } from './js/markup';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-// let query = '';
+const instance = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 const pixabay = new PixabayAPI();
 let searchSubject = '';
 
@@ -21,6 +27,7 @@ const onGetQuerySubmit = async event => {
     if (data.total === 0) {
       gallery.innerHTML = '';
       loadMore.classList.add('is-hidden');
+      Notiflix.Notify.warning('Please, enter word to search query');
       form.reset();
       return;
     }
@@ -31,6 +38,8 @@ const onGetQuerySubmit = async event => {
     }
 
     gallery.innerHTML = createMarkup(data.hits);
+    instance.refresh();
+
     Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`);
     if (data.total >= 40) {
       loadMore.classList.remove('is-hidden');
@@ -45,7 +54,7 @@ const onLoadmorePhoto = async () => {
   try {
     const { data } = await pixabay.getPhotosByQuery(searchSubject);
     gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
-
+    instance.refresh();
     const { height: cardHeight } = document
       .querySelector('.gallery')
       .firstElementChild.getBoundingClientRect();
@@ -70,33 +79,4 @@ const onLoadmorePhoto = async () => {
 };
 form.addEventListener('submit', onGetQuerySubmit);
 loadMore.addEventListener('click', onLoadmorePhoto);
-
-let instance = 0;
-const onGalleryImgClick = event => {
-  const sourcePath = event.currentTarget;
-
-  if (event.target.tagName !== 'IMG') return;
-  instance = basicLightbox.create(
-    `
-    <img class="modal" src="${sourcePath.largeImageURL}" >`,
-    {
-      onShow: () => {
-        document.addEventListener('keydown', onEscapeKeyClick);
-      },
-      onClose: () => {
-        document.removeEventListener('keydown', onEscapeKeyClick);
-      },
-    }
-  );
-
-  event.preventDefault();
-  instance.show();
-};
-bigPhoto.addEventListener('click', onGalleryImgClick);
-
-function onEscapeKeyClick(event) {
-  if (event.code !== 'Escape') return;
-  instance.close();
-}
-
-// document.addEventListener('DOMContentLoaded', onRenderPage);
+searchSubject = '';
