@@ -63,9 +63,9 @@ const onLoadmorePhoto = async () => {
     instance.refresh();
 
     console.log(data.total, pixabay.perPage, data.total / pixabay.perPage);
-    if (pixabay.page === Math.ceil(data.total / pixabay.perPage)) {
+    if (pixabay.page === Math.ceil(data.totalHits / pixabay.perPage)) {
       loadMore.classList.add('is-hidden');
-      Notiflix.Notify.info(
+      Notiflix.Notify.warning(
         "We're sorry, but you've reached the end of search results.",
         {
           timeout: 3000,
