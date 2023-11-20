@@ -61,16 +61,9 @@ const onLoadmorePhoto = async () => {
     const { data } = await pixabay.getPhotosByQuery(searchSubject);
     gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
     instance.refresh();
-    const { height: cardHeight } = document
-      .querySelector('.gallery')
-      .firstElementChild.getBoundingClientRect();
 
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
-    });
-
-    if (pixabay.page === Math.trunc(data.total / pixabay.perPage)) {
+    console.log(data.total, pixabay.perPage, data.total / pixabay.perPage);
+    if (pixabay.page === Math.ceil(data.total / pixabay.perPage)) {
       loadMore.classList.add('is-hidden');
       Notiflix.Notify.warning(
         "We're sorry, but you've reached the end of search results.",
@@ -79,6 +72,14 @@ const onLoadmorePhoto = async () => {
         }
       );
     }
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   } catch (err) {
     Notiflix.Notify.failure('Sorry! Invalid request. Something went wrong...');
   }
