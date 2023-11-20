@@ -47,7 +47,7 @@ const onGetQuerySubmit = async event => {
     instance.refresh();
 
     Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`);
-    if (data.total >= 40) {
+    if (data.totalHits >= 40) {
       loadMore.classList.remove('is-hidden');
     }
   } catch (err) {
@@ -62,7 +62,6 @@ const onLoadmorePhoto = async () => {
     gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
     instance.refresh();
 
-    console.log(data.total, pixabay.perPage, data.total / pixabay.perPage);
     if (pixabay.page === Math.ceil(data.totalHits / pixabay.perPage)) {
       loadMore.classList.add('is-hidden');
       Notiflix.Notify.warning(
